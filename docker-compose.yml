@@ -7,8 +7,12 @@ services:
       - redis_master_1_data:/data
       - ./redis1.conf/:/usr/local/etc/redis/redis.conf
     command: [ "redis-server", "/usr/local/etc/redis/redis.conf" ]
-    network_mode: host
-    #ports: ['6379:6379']
+    ports: ['6379:6379', '16379:16379']
+    environment:
+      - 'REDIS_NODES=redis_master_1 redis_master_2 redis_master_3 redis_slave_1 redis_slave_2 redis_slave_3'
+    networks:
+        redis_network:
+          ipv4_address: 172.24.2.2
 
   redis_master_2:
     image: 'redis:latest'
@@ -17,8 +21,12 @@ services:
       - redis_master_2_data:/data
       - ./redis2.conf:/usr/local/etc/redis/redis.conf
     command: [ "redis-server", "/usr/local/etc/redis/redis.conf" ]
-    network_mode: host
-    #ports: ['6380:6380']
+    ports: ['6380:6380', '16380:16380']
+    environment:
+      - 'REDIS_NODES=redis_master_1 redis_master_2 redis_master_3 redis_slave_1 redis_slave_2 redis_slave_3'
+    networks:
+        redis_network:
+          ipv4_address: 172.24.2.3
 
   redis_master_3:
     image: 'redis:latest'
@@ -27,8 +35,12 @@ services:
       - redis_master_3_data:/data
       - ./redis3.conf:/usr/local/etc/redis/redis.conf
     command: [ "redis-server", "/usr/local/etc/redis/redis.conf" ]
-    network_mode: host
-    #ports: ['6381:6381']
+    ports: ['6381:6381', '16381:16381']
+    environment:
+      - 'REDIS_NODES=redis_master_1 redis_master_2 redis_master_3 redis_slave_1 redis_slave_2 redis_slave_3'
+    networks:
+        redis_network:
+          ipv4_address: 172.24.2.4
 
   redis_slave_1:
     image: 'redis:latest'
@@ -37,8 +49,12 @@ services:
       - redis_slave_1_data:/data
       - ./redis4.conf:/usr/local/etc/redis/redis.conf
     command: [ "redis-server", "/usr/local/etc/redis/redis.conf" ]
-    network_mode: host
-    #ports: ['6382:6382']
+    ports: ['6382:6382', '16382:16382']
+    environment:
+      - 'REDIS_NODES=redis_master_1 redis_master_2 redis_master_3 redis_slave_1 redis_slave_2 redis_slave_3'
+    networks:
+        redis_network:
+          ipv4_address: 172.24.2.5
 
   redis_slave_2:
     image: 'redis:latest'
@@ -47,8 +63,12 @@ services:
       - redis_slave_2_data:/data
       - ./redis5.conf:/usr/local/etc/redis/redis.conf
     command: [ "redis-server", "/usr/local/etc/redis/redis.conf" ]
-    network_mode: host
-    #ports: ['6383:6383']
+    ports: ['6383:6383', '16383:16383']
+    environment:
+      - 'REDIS_NODES=redis_master_1 redis_master_2 redis_master_3 redis_slave_1 redis_slave_2 redis_slave_3'
+    networks:
+        redis_network:
+          ipv4_address: 172.24.2.6
 
   redis_slave_3:
     image: 'redis:latest'
@@ -57,8 +77,12 @@ services:
       - redis_slave_3_data:/data
       - ./redis6.conf:/usr/local/etc/redis/redis.conf
     command: [ "redis-server", "/usr/local/etc/redis/redis.conf" ]
-    network_mode: host
-    #ports: ['6384:6384']
+    ports: ['6384:6384', '16384:16384']
+    environment:
+      - 'REDIS_NODES=redis_master_1 redis_master_2 redis_master_3 redis_slave_1 redis_slave_2 redis_slave_3'
+    networks:
+        redis_network:
+          ipv4_address: 172.24.2.7
 
 volumes:
   redis_master_1_data: {}
@@ -67,3 +91,13 @@ volumes:
   redis_slave_1_data: {}
   redis_slave_2_data: {}
   redis_slave_3_data: {}
+
+networks:
+  # default:
+  #   name: redis_network    # Use a custom driver
+  redis_network:
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+        - subnet: "172.24.2.0/16"
