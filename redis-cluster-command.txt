@@ -1,0 +1,13 @@
+#compose
+docker-compose up -d
+docker exec -it redis_master_1 bash
+
+#create cluster
+redis-cli --cluster create 172.24.2.2:6379 172.24.2.3:6380 172.24.2.4:6381 172.24.2.5:6382 172.24.2.6:6383 172.24.2.7:6384 --cluster-replicas 1 --cluster-yes
+
+#check status
+redis-cli -h 172.24.2.3 -p 6380 cluster nodes
+
+#remove cluster and volume
+docker-compose down
+docker volume prune
